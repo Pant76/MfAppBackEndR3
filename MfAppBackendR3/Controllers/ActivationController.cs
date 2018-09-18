@@ -39,6 +39,11 @@ namespace MfAppBackendR3.Controllers
                 return "WrongCode";
 
             var cols = r.Split(',');
+
+            var isDeviceActivated = cols.FirstOrDefault(i => i == deviceId)!=null;
+            if (isDeviceActivated)
+                return "OK";
+
             var col = cols.FirstOrDefault(i => i == "free");
             if (col == null)
                 return "MaxExceeded";
