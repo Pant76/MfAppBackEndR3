@@ -11,42 +11,42 @@ namespace MfAppBackendR3.Controllers
 {
     public class ActivationController : ApiController
     {
-        // GET api/<controller>
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+
 
         // GET api/<controller>/5
-        public string Get(string code, string deviceId)
+
+        [HttpGet]
+        public string Activate(string code, string deviceId,int book)
         {
-            var csvFileName = "";
-            var activationFileName = "mfappactivation.csv";
+            var activationFileName = "";
+            if (book == 1)
+                activationFileName = "mfappactivation1.csv";
+            else
+                activationFileName= "mfappactivation2.csv";
+
             var codes = new List<string>();
             string csvPath = HostingEnvironment.MapPath("~/Uploads/") + Path.GetFileName(activationFileName);
             string activationFilePath = HostingEnvironment.MapPath("~/Uploads/") + Path.GetFileName(activationFileName);
 
             var res = File.ReadAllText(csvPath).Contains(code);
             if (!res)
-                return "CodeNotValid";
+                return "Il codice immesso non è valido.";
 
             var rows = File.ReadAllLines(activationFilePath);
             var r = rows.FirstOrDefault(i => i.Contains(code));
 
             var rowId = Array.IndexOf(rows, r);
 
-            if (r == null)
-                return "WrongCode";
 
             var cols = r.Split(',');
 
             var isDeviceActivated = cols.FirstOrDefault(i => i == deviceId)!=null;
             if (isDeviceActivated)
-                return "OK";
+                return "Il Contenuto è stato riattivato su questo dispositivo.";
 
             var col = cols.FirstOrDefault(i => i == "free");
             if (col == null)
-                return "MaxExceeded";
+                return "Spiacente, puoi attivare fino ad un massimo di 3 dispositivi.";
             else
             {
                 var i=Array.IndexOf(cols, col);
@@ -58,7 +58,7 @@ namespace MfAppBackendR3.Controllers
             rows[rowId] = r;
 
             File.WriteAllLines(activationFilePath, rows);
-            return "OK";
+            return "Complimenti. Contenuto attivato su questo dispositivo!";
         }
 
         // POST api/<controller>
