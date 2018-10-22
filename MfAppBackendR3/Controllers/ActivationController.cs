@@ -30,7 +30,7 @@ namespace MfAppBackendR3.Controllers
 
             var res = File.ReadAllText(csvPath).Contains(code);
             if (!res)
-                return "Activation failed. Invalid code entered.";
+                return "KO-Activation failed. Invalid code entered.";
 
             var rows = File.ReadAllLines(activationFilePath);
             var r = rows.FirstOrDefault(i => i.Contains(code));
@@ -42,11 +42,11 @@ namespace MfAppBackendR3.Controllers
 
             var isDeviceActivated = cols.FirstOrDefault(i => i == deviceId)!=null;
             if (isDeviceActivated)
-                return "Your content has been activated";
+                return "OK-Your content has been activated";
 
             var col = cols.FirstOrDefault(i => i == "free");
             if (col == null)
-                return "Sorry, maximum number of activations reached.";
+                return "KO-Sorry, maximum number of activations reached.";
             else
             {
                 var i=Array.IndexOf(cols, col);
@@ -58,7 +58,7 @@ namespace MfAppBackendR3.Controllers
             rows[rowId] = r;
 
             File.WriteAllLines(activationFilePath, rows);
-            return "Activation Succeded!";
+            return "OK-Activation Succeded!";
         }
 
         // POST api/<controller>
