@@ -12,7 +12,7 @@ namespace MfAppBackendR3.Controllers
     public class ActivationController : ApiController
     {
 
-
+        int maxActivations = 2;
         // GET api/<controller>/5
 
         [HttpGet]
@@ -44,8 +44,10 @@ namespace MfAppBackendR3.Controllers
             if (isDeviceActivated)
                 return "OK-Your content has been activated";
 
+            var activationCount= cols.Count(i => i != "free");
             var col = cols.FirstOrDefault(i => i == "free");
-            if (col == null)
+
+            if (activationCount>= maxActivations)
                 return "KO-Sorry, maximum number of activations reached.";
             else
             {
