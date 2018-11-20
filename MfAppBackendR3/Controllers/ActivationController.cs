@@ -27,13 +27,13 @@ namespace MfAppBackendR3.Controllers
             var codes = new List<string>();
             string csvPath = HostingEnvironment.MapPath("~/Uploads/") + Path.GetFileName(activationFileName);
             string activationFilePath = HostingEnvironment.MapPath("~/Uploads/") + Path.GetFileName(activationFileName);
-
-            var res = File.ReadAllText(csvPath).Contains(code);
+            var upperCode = code.ToUpperInvariant();
+            var res = File.ReadAllText(csvPath).ToUpperInvariant().Contains(upperCode);
             if (!res)
                 return "KO-Activation failed. Invalid code entered.";
 
             var rows = File.ReadAllLines(activationFilePath);
-            var r = rows.FirstOrDefault(i => i.Contains(code));
+            var r = rows.FirstOrDefault(i => i.ToUpperInvariant().Contains(upperCode));
 
             var rowId = Array.IndexOf(rows, r);
 
@@ -47,7 +47,8 @@ namespace MfAppBackendR3.Controllers
             var activationCount= cols.Count(i => i != "free");
             var col = cols.FirstOrDefault(i => i == "free");
 
-            if (activationCount>= maxActivations)
+            //il +1 serve perchè la prima colonna è !=free ma occupata dal codice del libro
+            if (activationCount>= maxActivations+1)
                 return "KO-Sorry, maximum number of activations reached.";
             else
             {
